@@ -1,4 +1,4 @@
-# ModFinder
+## ModFinder
 
 ModFinder is one of my first useful C++ applications that I've developed that would get occasional use. It took me a decent amount of time to create, but I am currently quite satisfied with the result. The purpose of ModFinder is to detect memory regions that are injected via the manual-map method. ModFinder supports both x86 and x64 Processes.
 
@@ -18,18 +18,18 @@ The following injectors have been tested and have successfully been detected:
 - Mapped memory region enumeration.
 - Valid DOS header enumeration.
 
-# Compatible
+## Compatible
 - Windows 10 (64-bit)
 - Windows 10 (32-bit)
 - Every Windows version before or after 10 has not been tested, but should cause no issues.
 
 
-# To Do
+## To Do
 
 - Ignore natively loaded dll base addresses.
 - Check for dll manifest string.
 - Possible code improvements. (if needed)
 
-# Image
+## Image
 ![mCv8K4G](https://user-images.githubusercontent.com/110091391/181204720-87e00aa4-f890-4e10-9cb6-b393924232d7.png)
 
