@@ -14,6 +14,11 @@ The following injectors have been tested and have successfully been detected:
 - Memject (Latest)
 - AlisaAlis (Latest)
 
+The following processes have been tested on
+- Steam
+- Visual Studio 2019
+- Wireshark
+
 
 # Features
 - Mapped memory region enumeration.
