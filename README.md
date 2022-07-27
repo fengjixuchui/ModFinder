@@ -14,7 +14,7 @@ The following injectors have been tested and have successfully been detected:
 - Memject (Latest)
 - AlisaAlis (Latest)
 
-# Features
+## Features
 - Mapped memory region enumeration.
 - Valid DOS header enumeration.
 
