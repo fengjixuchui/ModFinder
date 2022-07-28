@@ -28,8 +28,6 @@ void Query::LinkedProcessAddresses(std::string processToQuery)
 
             // Append all process module addresses.
             linked.push_back(hMods[i]);
-
-            // std::cout << linked[i] << "\n";
         }
     }
 
