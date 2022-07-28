@@ -30,5 +30,4 @@ The following injectors have been tested and have successfully been detected:
 - Do some experimenting with PAGE rights and linked address detection for more reliability.
 
 ## Preview
-![mCv8K4G](https://user-images.githubusercontent.com/110091391/181204720-87e00aa4-f890-4e10-9cb6-b393924232d7.png)
 
