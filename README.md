@@ -25,8 +25,6 @@ The following injectors have been tested and have successfully been detected:
 
 
 ## To Do
-
-- Ignore natively loaded dll base addresses.
 - Check for dll manifest string.
 - Possible code improvements. (if needed)
 
