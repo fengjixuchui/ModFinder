@@ -178,7 +178,6 @@
     <ClCompile Include="Query\MemoryRegions.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Globals\Globals.hpp" />
     <ClInclude Include="Globals\Include.hpp" />
     <ClInclude Include="Process\Process.hpp" />
     <ClInclude Include="Query\Query.hpp" />

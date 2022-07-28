@@ -1,11 +1,11 @@
 #include "Query.hpp"
 
-void Query::MemoryRegions()
+void Query::MemoryRegions(std::string processToQuery)
 {
     IMAGE_DOS_HEADER dosHeader = { 0 };
     MEMORY_BASIC_INFORMATION memInfo = { 0 };
 
-    const HANDLE procHandle = Process::GetHandle(Globals::procName.c_str());
+    const HANDLE procHandle = Process::GetHandle(processToQuery.c_str());
     const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
     uintptr_t currentAddress = 0;
@@ -37,7 +37,7 @@ void Query::MemoryRegions()
             continue;
 
         // Enumerate addresses and find the DOS header.
-        ReadProcessMemory(Process::GetHandle(Globals::procName.c_str()), memInfo.BaseAddress, &dosHeader, sizeof(dosHeader), NULL);
+        ReadProcessMemory(Process::GetHandle(processToQuery.c_str()), memInfo.BaseAddress, &dosHeader, sizeof(dosHeader), NULL);
 
         bool hasValidDosHeader = dosHeader.e_magic == IMAGE_DOS_SIGNATURE;
 
@@ -49,7 +49,7 @@ void Query::MemoryRegions()
             addressCount++;
 
             std::cout << "\n0x" << std::hex << memInfo.BaseAddress << "\n";
-            std::cout << "  |_ Region size      --> " << std::dec << memInfo.RegionSize << "Kb" << "\n";
+            std::cout << "  |_ Region size      --> " << "0x" << std::hex << memInfo.RegionSize << " (" << std::dec << memInfo.RegionSize << ")" << "\n";
             std::cout << "  |_ Initial rights   --> " << GetProtectionType(memInfo, PROTECTION_TYPE::INITIAL_PROTECT) << "\n";
             std::cout << "  |_ Current rights   --> " << GetProtectionType(memInfo, PROTECTION_TYPE::DEFAULT) << "\n";
             std::cout << "  |_ DOS header       --> ";
@@ -77,26 +77,23 @@ void Query::MemoryRegions()
         }
     }
 
-    if (addressCount >= 0)
+    SetConsoleTitleA("Finished");
+
+    std::cout << "\nSummary\n";
+    std::cout << "  |_ Address count    --> " << addressCount << "\n";
+
+    std::cout << "  |_ Most suspicious  --> ";
+
+    for (unsigned int i = 0; i < arr.size(); i++)
     {
-        SetConsoleTitleA("Finished");
+        std::cout << "0x" << arr[i];
 
-        std::cout << "\nSummary\n";
-        std::cout << "  |_ Address count    --> " << addressCount << "\n";
-        
-        std::cout << "  |_ Most suspicious  --> ";
-
-        for (unsigned int i = 0; i < arr.size(); i++)
-        {
-            std::cout << "0x" << arr[i];
-
-            // Seperate when the value is less then max - 1.
-            if (i != arr.size() - 1)
-                std::cout << ", ";
-        }
-
-        std::cout << "\n";
+        // Seperate when the value is less then max - 1.
+        if (i != arr.size() - 1)
+            std::cout << ", ";
     }
+
+    std::cout << "\n";
 
     // Prevent auto closing.
     std::cin.get();

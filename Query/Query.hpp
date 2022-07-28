@@ -10,6 +10,6 @@ enum PROTECTION_TYPE
 
 namespace Query
 {
-    void MemoryRegions();
+    void MemoryRegions(std::string processToQuery);
     std::string GetProtectionType(MEMORY_BASIC_INFORMATION mInfo, PROTECTION_TYPE protType);
 }

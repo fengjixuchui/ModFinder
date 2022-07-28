@@ -4,16 +4,18 @@ int main()
 {
 	SetConsoleTitleA("ModFinder");
 
+	std::string	processName;
+
 	std::cout << "Process name -> ";
-	std::getline(std::cin, Globals::procName);
+	std::getline(std::cin, processName);
 
-	if (Globals::procName.find(".exe") == std::string::npos)
-		Globals::procName += ".exe";
+	if (processName.find(".exe") == std::string::npos)
+		processName += ".exe";
 
-	if (Process::GetHandle(Globals::procName.c_str()))
+	if (Process::GetHandle(processName.c_str()))
 	{
 		system("cls");
-		Query::MemoryRegions();
+		Query::MemoryRegions(processName);
 	}
 	else
 	{
