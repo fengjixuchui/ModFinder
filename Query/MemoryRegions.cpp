@@ -5,20 +5,21 @@ void Query::MemoryRegions(std::string processToQuery)
     IMAGE_DOS_HEADER dosHeader = { 0 };
     MEMORY_BASIC_INFORMATION memInfo = { 0 };
 
-    const HANDLE procHandle = Process::GetHandle(processToQuery.c_str());
+    const HANDLE processHandle = Process::GetHandle(processToQuery.c_str());
     const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
     uintptr_t currentAddress = 0;
-    void* suspectAddress = (void*)memInfo.BaseAddress;
+    void* suspectAddress = 0;
+
     unsigned int addressCount = 0;
+    unsigned int totalReadCount = 0;
+    unsigned int linkedCount = 0;
 
-    static std::vector<void*>arr;
-
-    while (VirtualQueryEx(procHandle, (LPCVOID)currentAddress, &memInfo, sizeof(memInfo)))
+    while (VirtualQueryEx(processHandle, (LPCVOID)currentAddress, &memInfo, sizeof(memInfo)))
     {
         // Don't repeatedly set.
-        if (!SetConsoleTitleA("Scanning..."))
-            SetConsoleTitleA("Scanning...");
+        if (!SetConsoleTitleA("ModFinder | Scanning..."))
+            SetConsoleTitleA("ModFinder | Scanning...");
 
         // Calculation for next address.
         currentAddress = (uintptr_t)memInfo.BaseAddress + memInfo.RegionSize;
@@ -27,7 +28,7 @@ void Query::MemoryRegions(std::string processToQuery)
         if (!memInfo.BaseAddress)
             continue;
 
-        // Ignore any region with a size less than 4KB.
+        // Ignore any region with a size less than 4Kb.
         if (memInfo.RegionSize < 4096)
             continue;
 
@@ -36,23 +37,41 @@ void Query::MemoryRegions(std::string processToQuery)
         if (memInfo.Type != MEM_PRIVATE)
             continue;
 
-        // Enumerate addresses and find the DOS header.
+        bool linkedAddressFound = false;
+
+        // Loop through linked dll address count.
+        for (unsigned int i = 0; i < linked.size(); i++)
+        {
+            linkedAddressFound = memInfo.BaseAddress == linked[i] ? true : false;
+
+            // If we found a linked address, add to the counter.
+            if (linkedAddressFound)
+                linkedCount++;
+        }
+
+        // Ignore addresses that are created natively from the process.
+        if (linkedAddressFound)
+            continue;
+
+        // Start counting valid reads from here.
+        totalReadCount++;
+
+        // Enumerate addresses for the DOS header.
         ReadProcessMemory(Process::GetHandle(processToQuery.c_str()), memInfo.BaseAddress, &dosHeader, sizeof(dosHeader), NULL);
 
         bool hasValidDosHeader = dosHeader.e_magic == IMAGE_DOS_SIGNATURE;
 
         // Initial protection is ERW && current protection is R = typically mapped code.
         // Initial protection is ERW && current protection is ERW = typically mapped code.
-        if (memInfo.AllocationProtect == PAGE_EXECUTE_READWRITE && memInfo.Protect == PAGE_READONLY ||
-            memInfo.AllocationProtect == PAGE_EXECUTE_READWRITE && memInfo.Protect == PAGE_EXECUTE_READWRITE)
+        if (memInfo.AllocationProtect == PAGE_EXECUTE_READWRITE && memInfo.Protect == PAGE_READONLY || memInfo.AllocationProtect == PAGE_EXECUTE_READWRITE && memInfo.Protect == PAGE_EXECUTE_READWRITE)
         {
             addressCount++;
 
             std::cout << "\n0x" << std::hex << memInfo.BaseAddress << "\n";
-            std::cout << "  |_ Region size      --> " << "0x" << std::hex << memInfo.RegionSize << " (" << std::dec << memInfo.RegionSize << ")" << "\n";
-            std::cout << "  |_ Initial rights   --> " << GetProtectionType(memInfo, PROTECTION_TYPE::INITIAL_PROTECT) << "\n";
-            std::cout << "  |_ Current rights   --> " << GetProtectionType(memInfo, PROTECTION_TYPE::DEFAULT) << "\n";
-            std::cout << "  |_ DOS header       --> ";
+            std::cout << "  |_ Region size:       " << "0x" << std::hex << memInfo.RegionSize << " (" << std::dec << memInfo.RegionSize << ")" << "\n";
+            std::cout << "  |_ Initial rights:    " << GetProtectionType(memInfo, PROTECTION_TYPE::INITIAL_PROTECT) << "\n";
+            std::cout << "  |_ Current rights:    " << GetProtectionType(memInfo, PROTECTION_TYPE::DEFAULT) << "\n";
+            std::cout << "  |_ DOS header:        ";
 
             if (hasValidDosHeader)
             {
@@ -60,36 +79,37 @@ void Query::MemoryRegions(std::string processToQuery)
                 suspectAddress = memInfo.BaseAddress;
 
                 // Append current suspect address to array.
-                arr.push_back(suspectAddress);
+                suspect.push_back(suspectAddress);
 
                 // Green
                 SetConsoleTextAttribute(consoleHandle, 10);
 
-                printf("Yes\n");
+                printf("True\n");
 
                 // Normal
                 SetConsoleTextAttribute(consoleHandle, 7);
             }
             else
-                printf("No\n");
+                printf("False\n");
             
             std::cout << "__________________________________________" << "\n";
         }
     }
 
-    SetConsoleTitleA("Finished");
+    SetConsoleTitleA("ModFinder | Finished");
 
     std::cout << "\nSummary\n";
-    std::cout << "  |_ Address count    --> " << addressCount << "\n";
+    std::cout << "  |_ Address count:     " << addressCount << "\n";
+    std::cout << "  |_ Checked count:     " << totalReadCount << "\n";
+    std::cout << "  |_ Linked count:      " << linkedCount << "\n";
+    std::cout << "  |_ Suspicious:        ";
 
-    std::cout << "  |_ Most suspicious  --> ";
-
-    for (unsigned int i = 0; i < arr.size(); i++)
+    for (unsigned int i = 0; i < suspect.size(); i++)
     {
-        std::cout << "0x" << arr[i];
+        std::cout << "0x" << suspect[i];
 
         // Seperate when the value is less then max - 1.
-        if (i != arr.size() - 1)
+        if (i != suspect.size() - 1)
             std::cout << ", ";
     }
 

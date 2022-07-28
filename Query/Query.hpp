@@ -12,4 +12,8 @@ namespace Query
 {
     void MemoryRegions(std::string processToQuery);
     std::string GetProtectionType(MEMORY_BASIC_INFORMATION mInfo, PROTECTION_TYPE protType);
+    void LinkedProcessAddresses(std::string processToQuery);
+
+    inline std::vector<void*>suspect;
+    inline std::vector<void*>linked;
 }

@@ -1,6 +1,5 @@
 #include "Process.hpp"
 
-// From stackoverflow.
 HANDLE Process::GetHandle(PCSTR proc)
 {
     DWORD pid = 0;
