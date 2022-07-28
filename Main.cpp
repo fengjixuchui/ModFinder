@@ -4,7 +4,7 @@ int main()
 {
 	SetConsoleTitleA("ModFinder");
 
-	std::string	processName;
+	std::string processName;
 
 	std::cout << "Process name: ";
 	std::getline(std::cin, processName);
