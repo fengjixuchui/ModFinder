@@ -27,7 +27,7 @@ The following injectors have been tested and have successfully been detected:
 
 ## To Do
 - Check for DLL manifest string.
-- Do some experimenting with PAGE rights and linked address detection for more reliability.
+- Do some experimenting with PAGE rights for more reliability.
 
 ## Preview
 ![baDyCdD](https://user-images.githubusercontent.com/110091391/181606514-d7c277f7-7aa7-492d-bbbd-f44b64706967.png)
