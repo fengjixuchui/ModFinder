@@ -17,7 +17,7 @@ The following injectors have been tested and have successfully been detected:
 ## Features
 - Mapped memory region enumeration.
 - Valid DOS header enumeration.
-- Linked address detection.
+- Ignore linked module addresses.
 
 ## Compatible
 - Windows 10 (64-bit)
