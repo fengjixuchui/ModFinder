@@ -1,16 +1,13 @@
 #include "Query.hpp"
 
-std::string Query::ProtectionType(MEMORY_BASIC_INFORMATION mInfo, PROTECTION_TYPE protType)
-{
-    switch (protType)
-    {
+std::string Query::ProtectionType( MEMORY_BASIC_INFORMATION mInfo, PROTECTION_TYPE protType ) {
+    switch ( protType ) {
         case DEFAULT:
-            if (!mInfo.Protect)
+            if ( !mInfo.Protect )
                 return "Unable to parse protection";
 
             // Only check these two protection types because its the only two we check
-            switch (mInfo.Protect)
-            {
+            switch ( mInfo.Protect ) {
                 case PAGE_READONLY:
                     return "R";
                     break;
@@ -22,12 +19,11 @@ std::string Query::ProtectionType(MEMORY_BASIC_INFORMATION mInfo, PROTECTION_TYP
             break;
 
         case INITIAL:
-            if (!mInfo.AllocationProtect)
+            if ( !mInfo.AllocationProtect )
                 return "Unable to parse initial protection";
 
             // Only check these two protection types because its the only two we check
-            switch (mInfo.AllocationProtect)
-            {
+            switch ( mInfo.AllocationProtect ) {
                 case PAGE_READONLY:
                     return "R";
                     break;
