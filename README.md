@@ -26,8 +26,8 @@ The following injectors have been tested and have successfully been detected:
 
 
 ## To Do
+- Display only relevant addresses. (fix / improve false positives)
 - Check for DLL manifest string.
-- Do some experimenting with PAGE rights for more reliability.
 
 ## Preview
 ![baDyCdD](https://user-images.githubusercontent.com/110091391/181606514-d7c277f7-7aa7-492d-bbbd-f44b64706967.png)
