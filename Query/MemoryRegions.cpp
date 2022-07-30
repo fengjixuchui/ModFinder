@@ -30,17 +30,22 @@ void Query::MemoryRegions(std::string processToQuery)
 
         // Ignore non private regions.
         // Manual-mapped regions should always be private.
-        if (memInfo.Type != MEM_PRIVATE)
+        if (!(memInfo.Type == MEM_PRIVATE))
             continue;
 
         // Manual-mapped region state's should always be commit.
-        if (memInfo.State != MEM_COMMIT)
+        if (!(memInfo.State == MEM_COMMIT))
             continue;
 
         // Ignore regions that don't contain an initial allocation type of RWX.
-        // Manual-mapped regions always start with this type.
+        // Manual-mapped regions should always start with this type.
         // Initial cannot be modified, only current.
-        if (memInfo.AllocationProtect != PAGE_EXECUTE_READWRITE)
+        if (!(memInfo.AllocationProtect == PAGE_EXECUTE_READWRITE))
+            continue;
+
+        // Manual-mapped regions should have at least one of the rights.
+        // X, RX, RWX, RW
+        if (!(memInfo.Protect == PAGE_EXECUTE || memInfo.Protect == PAGE_EXECUTE_READ || memInfo.Protect == PAGE_EXECUTE_READWRITE || memInfo.Protect == PAGE_READWRITE))
             continue;
 
         bool linkedAddressFound = false;
@@ -60,6 +65,10 @@ void Query::MemoryRegions(std::string processToQuery)
 
         bool hasValidDosHeader = dosHeader.e_magic == IMAGE_DOS_SIGNATURE;
 
+        // Only allow read only if the DOS header is found.
+        if (memInfo.Protect == PAGE_READONLY && !hasValidDosHeader)
+            continue;
+       
         std::cout << "0x" << std::hex << memInfo.BaseAddress << "\n";
 
         if (hasValidDosHeader)
