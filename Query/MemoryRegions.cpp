@@ -6,7 +6,6 @@ void Query::MemoryRegions(std::string processToQuery)
     MEMORY_BASIC_INFORMATION memInfo = { 0 };
 
     const HANDLE processHandle = Process::GetHandle(processToQuery.c_str());
-    const HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
     uintptr_t currentAddress = 0;
     void* suspectAddress = 0;
@@ -32,6 +31,10 @@ void Query::MemoryRegions(std::string processToQuery)
         // Ignore non private regions.
         // Manual-mapped regions should always be private.
         if (memInfo.Type != MEM_PRIVATE)
+            continue;
+
+        // Manual-mapped region state's should always be commit.
+        if (memInfo.State != MEM_COMMIT)
             continue;
 
         // Ignore regions that don't contain an initial allocation type of RWX.
@@ -72,6 +75,9 @@ void Query::MemoryRegions(std::string processToQuery)
     // Done.
     std::cout << "\nFinished\n";
     std::cout << "Suspicious: ";
+
+    // Cleanup.
+    CloseHandle(processHandle);
 
     // Enumerate suspect addresses.
     for (unsigned int i = 0; i < suspect.size(); i++)
