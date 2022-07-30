@@ -1,6 +1,6 @@
 ## ModFinder
 
-ModFinder is one of my first useful C++ applications that I've developed that would get occasional use. It took me a decent amount of time to create, but I am currently quite satisfied with the result. The purpose of ModFinder is to detect memory regions that are injected via the manual-map method. ModFinder supports both x86 and x64 Processes.
+ModFinder is a usermode tool to detect memory regions that are injected via the manual-map method. It took me a decent amount of time to create, but I am currently quite satisfied with the result. ModFinder supports both x86 and x64 Processes.
 
 Typically, the only addresses you will receive are from manual-mapping flags. Rarely, you may receive a few other results of false catches. These are usually very easy to distinguish from the region you're actually looking for. An upside to ModFinder is that even if the entire optional headers page is erased, you will still be informed of regions that correspond with the first region. The primary reason that ModFinder distinguishes from other manual-map detection programs, is due to how well it performs at detecting regions which were mapped.
 
