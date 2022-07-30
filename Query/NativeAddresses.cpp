@@ -1,6 +1,6 @@
 #include "Query.hpp"
 
-void Query::NativeAddresses(std::string processToQuery)
+void Query::NativeAddresses(std::string const& processToQuery)
 {
     HMODULE hMods[1024];
     HANDLE hProcess;
@@ -8,7 +8,7 @@ void Query::NativeAddresses(std::string processToQuery)
     unsigned int i;
 
     // Get a handle to the process.
-    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetProcessId(Process::GetHandle(processToQuery.c_str())));
+    hProcess = Process::GetHandle(processToQuery.c_str());
 
     if (!hProcess)
     {

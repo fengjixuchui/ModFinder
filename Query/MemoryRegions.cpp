@@ -1,6 +1,6 @@
 #include "Query.hpp"
 
-void Query::MemoryRegions(std::string processToQuery)
+void Query::MemoryRegions(std::string const& processToQuery)
 {
     IMAGE_DOS_HEADER dosHeader = { 0 };
     MEMORY_BASIC_INFORMATION memInfo = { 0 };
@@ -8,7 +8,7 @@ void Query::MemoryRegions(std::string processToQuery)
     const HANDLE processHandle = Process::GetHandle(processToQuery.c_str());
 
     uintptr_t currentAddress = 0;
-    void* suspectAddress = 0;
+    void* suspectAddress = nullptr;
 
     // If we cannot read the process handle, stop here.
     if (!processHandle)
@@ -24,10 +24,6 @@ void Query::MemoryRegions(std::string processToQuery)
         if (!memInfo.BaseAddress)
             continue;
 
-        // Ignore any region with a size less than 4Kb.
-        if (memInfo.RegionSize < 4096)
-            continue;
-
         // Ignore non private regions.
         // Manual-mapped regions should always be private.
         if (!(memInfo.Type == MEM_PRIVATE))
@@ -40,12 +36,13 @@ void Query::MemoryRegions(std::string processToQuery)
         // Ignore regions that don't contain an initial allocation type of RWX.
         // Manual-mapped regions should always start with this type.
         // Initial cannot be modified, only current.
-        if (!(memInfo.AllocationProtect == PAGE_EXECUTE_READWRITE))
+        if (!(memInfo.AllocationProtect & PAGE_EXECUTE_READWRITE))
             continue;
 
         // Manual-mapped regions should have at least one of the rights.
         // X, RX, RWX, RW
-        if (!(memInfo.Protect == PAGE_EXECUTE || memInfo.Protect == PAGE_EXECUTE_READ || memInfo.Protect == PAGE_EXECUTE_READWRITE || memInfo.Protect == PAGE_READWRITE))
+        if (!(memInfo.Protect & PAGE_EXECUTE || memInfo.Protect & PAGE_EXECUTE_READ ||
+            memInfo.Protect & PAGE_EXECUTE_READWRITE || memInfo.Protect & PAGE_READWRITE))
             continue;
 
         bool linkedAddressFound = false;
@@ -61,14 +58,14 @@ void Query::MemoryRegions(std::string processToQuery)
             continue;
 
         // Enumerate addresses for the DOS header.
-        ReadProcessMemory(Process::GetHandle(processToQuery.c_str()), memInfo.BaseAddress, &dosHeader, sizeof(dosHeader), NULL);
+        ReadProcessMemory(processHandle, memInfo.BaseAddress, &dosHeader, sizeof(dosHeader), NULL);
 
         bool hasValidDosHeader = dosHeader.e_magic == IMAGE_DOS_SIGNATURE;
 
-        // Only allow read only if the DOS header is found.
-        if (memInfo.Protect == PAGE_READONLY && !hasValidDosHeader)
+        // Only allow read only pages if the DOS header is found.
+        if (memInfo.Protect & PAGE_READONLY && !hasValidDosHeader)
             continue;
-       
+
         std::cout << "0x" << std::hex << memInfo.BaseAddress << "\n";
 
         if (hasValidDosHeader)
@@ -89,7 +86,7 @@ void Query::MemoryRegions(std::string processToQuery)
     CloseHandle(processHandle);
 
     // Enumerate suspect addresses.
-    for (unsigned int i = 0; i < suspect.size(); i++)
+    for (std::size_t i = 0; i < suspect.size(); i++)
     {
         std::cout << "0x" << suspect[i];
 

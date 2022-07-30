@@ -10,9 +10,9 @@ enum PROTECTION_TYPE
 
 namespace Query
 {
-    void MemoryRegions(std::string processToQuery);
+    void MemoryRegions(std::string const& processToQuery);
+    void NativeAddresses(std::string const& processToQuery);
     std::string ProtectionType(MEMORY_BASIC_INFORMATION mInfo, PROTECTION_TYPE protType);
-    void NativeAddresses(std::string processToQuery);
 
     inline std::vector<void*>suspect;
     inline std::vector<void*>linked;
