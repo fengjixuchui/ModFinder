@@ -17,7 +17,7 @@ HANDLE Process::GetHandle(PCSTR proc)
         {
             // Compare process.szExeFile based on format of name, i.e., trim file path
             // trim .exe if necessary, etc.
-            if (std::string(process.szExeFile) == std::string(proc))
+            if (!strcmp(process.szExeFile, proc))
             {
                 pid = process.th32ProcessID;
                 break;
