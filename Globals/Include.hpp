@@ -7,6 +7,5 @@
 #include <string>
 #include <chrono>
 
-#include "Globals.hpp"
 #include "../Process/Process.hpp"
 #include "../Query/Query.hpp"

@@ -2,24 +2,27 @@
 
 int main()
 {
-	SetConsoleTitleA("ModFinder");
+	SetConsoleTitleA("");
 
-	std::cout << "Process name -> ";
-	std::getline(std::cin, Globals::procName);
+	std::string processName;
 
-	if (Globals::procName.find(".exe") == std::string::npos)
-		Globals::procName += ".exe";
+	std::cout << "Process name: ";
+	std::getline(std::cin, processName);
 
-	if (Process::GetHandle(Globals::procName.c_str()))
+	if (processName.find(".exe") == std::string::npos)
+		processName += ".exe";
+
+	if (Process::GetHandle(processName.c_str()))
 	{
 		system("cls");
-		Query::MemoryRegions();
+		Query::NativeAddresses(processName);
+		Query::MemoryRegions(processName);
 	}
 	else
 	{
 		system("cls");
-		printf("Unable to parse process\nClosing in five seconds");
-		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-		exit(-1);
+		std::cout << "Unable to parse process\n" << "Closing in 2 seconds\n";
+		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+		exit(0);
 	}
 }

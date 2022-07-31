@@ -1,6 +1,6 @@
-# ModFinder
+## ModFinder
 
-ModFinder is one of my first useful C++ applications that I've developed that would get occasional use. It took me a decent amount of time to create, but I am currently quite satisfied with the result. The purpose of ModFinder is to detect memory regions that are injected via the manual-map method. (The program is unfortunately only compatible with x86 processes. (x64 Implementation is planned in the future and should be extremely simple to implement.)
+ModFinder is a usermode tool for detecting memory regions that are injected via the manual-map method.
 
 Typically, the only addresses you will receive are from manual-mapping flags. Rarely, you may receive a few other results of false catches. These are usually very easy to distinguish from the region you're actually looking for. An upside to ModFinder is that even if the entire optional headers page is erased, you will still be informed of regions that correspond with the first region. The primary reason that ModFinder distinguishes from other manual-map detection programs, is due to how well it performs at detecting regions which were mapped.
 
@@ -14,24 +14,20 @@ The following injectors have been tested and have successfully been detected:
 - Memject (Latest)
 - AlisaAlis (Latest)
 
-
-# Features
+## Features
 - Mapped memory region enumeration.
 - Valid DOS header enumeration.
+- Ignore linked module addresses.
 
-# Compatible
+## Compatible
 - Windows 10 (64-bit)
 - Windows 10 (32-bit)
 - Every Windows version before or after 10 has not been tested, but should cause no issues.
 
 
-# To Do
+## To Do
+- Display only relevant addresses. (fix / improve false positives)
+- Check for DLL manifest string.
 
-- Ignore natively loaded dll base addresses.
-- Check for dll manifest string.
-- Support for x64 processes.
-- Possible code improvements. (if needed)
-
-# Image
-![mCv8K4G](https://user-images.githubusercontent.com/110091391/181204720-87e00aa4-f890-4e10-9cb6-b393924232d7.png)
-
+## Preview
+![5mHMw0QRUc](https://user-images.githubusercontent.com/110091391/181724080-afb7a0b8-b341-4408-b498-792a7711c6cd.png)

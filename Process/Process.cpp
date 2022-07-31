@@ -1,6 +1,5 @@
 #include "Process.hpp"
 
-// From stackoverflow.
 HANDLE Process::GetHandle(PCSTR proc)
 {
     DWORD pid = 0;
@@ -18,7 +17,7 @@ HANDLE Process::GetHandle(PCSTR proc)
         {
             // Compare process.szExeFile based on format of name, i.e., trim file path
             // trim .exe if necessary, etc.
-            if (std::string(process.szExeFile) == std::string(proc))
+            if (!strcmp(process.szExeFile, proc))
             {
                 pid = process.th32ProcessID;
                 break;
@@ -29,7 +28,7 @@ HANDLE Process::GetHandle(PCSTR proc)
     // Cleanup.
     CloseHandle(snapshot);
 
-    if (pid != 0)
+    if (pid)
         return OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 
     // Not found.

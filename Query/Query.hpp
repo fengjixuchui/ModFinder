@@ -5,11 +5,15 @@
 enum PROTECTION_TYPE
 {
     DEFAULT = 0,
-    INITIAL_PROTECT
+    INITIAL
 };
 
 namespace Query
 {
-    void MemoryRegions();
-    std::string GetProtectionType(MEMORY_BASIC_INFORMATION mInfo, PROTECTION_TYPE protType);
+    void MemoryRegions(std::string const& processToQuery);
+    void NativeAddresses(std::string const& processToQuery);
+    std::string ProtectionType(MEMORY_BASIC_INFORMATION mInfo, PROTECTION_TYPE protType);
+
+    inline std::vector<void*>suspect;
+    inline std::vector<void*>linked;
 }
