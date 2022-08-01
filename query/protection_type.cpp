@@ -1,12 +1,15 @@
 #include "query.hpp"
 
-std::string query::current_protection_type(MEMORY_BASIC_INFORMATION memory_info, PROTECTION_TYPE protection_type) {
-    switch (protection_type) {
+std::string query::current_protection_type( MEMORY_BASIC_INFORMATION memory_info, PROTECTION_TYPE protection_type )
+{
+    switch ( protection_type )
+    {
     case CURRENT:
-        if (!memory_info.Protect)
+        if ( !memory_info.Protect )
             return "Unable to parse current protection";
 
-        switch (memory_info.Protect) {
+        switch ( memory_info.Protect )
+        {
         case PAGE_NOACCESS:
             return "NA";
             break;
@@ -54,10 +57,11 @@ std::string query::current_protection_type(MEMORY_BASIC_INFORMATION memory_info,
         break;
 
     case INITIAL:
-        if (!memory_info.AllocationProtect)
+        if ( !memory_info.AllocationProtect )
             return "Unable to parse initial protection";
 
-        switch (memory_info.AllocationProtect) {
+        switch ( memory_info.AllocationProtect )
+        {
         case PAGE_NOACCESS:
             return "NA";
             break;
