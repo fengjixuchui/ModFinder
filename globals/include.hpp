@@ -7,5 +7,5 @@
 #include <string>
 #include <chrono>
 
-#include "../Process/Process.hpp"
-#include "../Query/Query.hpp"
+#include "../process/process.hpp"
+#include "../query/query.hpp"
